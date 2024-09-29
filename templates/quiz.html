@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест по формуле</title>
+</head>
+<body>
+    <h1>Выберите правильный ответ для формулы: {{ formula.name }}</h1>
+    <form method="post">
+        <label>{{ formula.formula }}</label><br>
+        <input type="hidden" name="correct" value="{{ formula.name }}">
+        <input type="radio" name="answer" value="{{ formula.name }}" required>{{ formula.name }}<br>
+        {% for option in ['Правильный ответ', 'Неправильный ответ', 'Еще один ответ', 'Примерный ответ'] %}
+            <input type="radio" name="answer" value="{{ option }}">{{ option }}<br>
+        {% endfor %}
+        <input type="submit" value="Ответить">
+    </form>
+</body>
+</html>

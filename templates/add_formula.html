@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить формулу</title>
+</head>
+<body>
+    <h1>Добавить новую формулу</h1>
+    <form action="" method="post">
+        <label for="name">Название:</label>
+        <input type="text" id="name" name="name" required><br>
+        <label for="description">Описание:</label>
+        <textarea id="description" name="description"></textarea><br>
+        <label for="formula">Формула:</label>
+        <textarea id="formula" name="formula" required></textarea><br>
+        <label for="module_id">Выберите модуль:</label>
+        <select id="module_id" name="module_id" required>
+            {% for module in modules %}
+                <option value="{{ module.id }}">{{ module.name }}</option>
+            {% endfor %}
+        </select><br>
+        <input type="submit" value="Добавить формулу">
+    </form>
+    <a href="{{ url_for('modules') }}">На список модулей</a>
+</body>
+</html>
