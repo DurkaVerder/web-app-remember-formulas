@@ -1,7 +1,7 @@
 import re
 
 def check_login(login):
-    if re.fullmatch(r'[A-Za-z]+', login):
+    if re.fullmatch(r'[A-Za-z0-9]+', login):
         return True
     return False
 
@@ -14,8 +14,8 @@ def check_password(password):
     return False
 
 
-login = "UserLogin"
-password = "Password123"
+login = input()
+password = input()
 
 if check_login(login):
     print("Логин корректен")
