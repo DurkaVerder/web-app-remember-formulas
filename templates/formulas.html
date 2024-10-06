@@ -14,5 +14,7 @@
     </ul>
     <a href="{{ url_for('main.add_formula') }}">Добавить формулу</a>
     <a href="{{ url_for('main.list_modules') }}">На главную</a>
+    <a href="{{ url_for('main.start_quiz', module_id=module.id) }}">Начать квиз по этому модулю</a>
+
 </body>
 </html>

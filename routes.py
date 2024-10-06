@@ -53,6 +53,26 @@ def register():
 
     return render_template('register.html')
 
+
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        login_input = request.form['login']
+        password_input = request.form['password']
+        
+        user = User.query.filter_by(login=login_input, password=password_input).first()
+        
+        if user:
+            session['user_id'] = user.id
+            session['nickname'] = user.nickname
+            return redirect(url_for('main.home'))
+        else:
+            return render_template('login.html', error="Неправильный логин или пароль.")
+
+    return render_template('login.html')
+
+
+
 @main.route('/assign_formula_to_user/<int:user_id>/<int:formula_id>')
 def assign_formula_to_user(user_id, formula_id):
     user_formula = UsersFormulas(iduser=user_id, idformula=formula_id)
@@ -67,17 +87,34 @@ def assign_module_to_user(user_id, module_id):
     db.session.commit()
     return f"Модуль {module_id} назначен пользователю {user_id}"
 
-@main.route('/quiz/<int:topic>', methods=['GET'])
-def quiz(topic):
-    session['current_topic'] = topic
-    formulas = Formula.query.filter_by(idmodul=topic).all()
+
+@main.route('/quiz/<int:module_id>', methods=['GET'])
+def start_quiz(module_id):
+    session['current_module'] = module_id
+    formulas = Formula.query.filter_by(idmodul=module_id).all()
+    
+    # Перемешиваем формулы
     random.shuffle(formulas)
 
+    # Сохраняем перемешанные формулы в сессии
     session['shuffled_formulas'] = [formula.to_dict() for formula in formulas]
     session['quiz_index'] = 0
     session['correct_answers'] = 0
 
     return redirect(url_for('main.take_quiz'))
+
+
+# @main.route('/quiz/<int:topic>', methods=['GET'])
+# def quiz(topic):
+#     session['current_topic'] = topic
+#     formulas = Formula.query.filter_by(idmodul=topic).all()
+#     random.shuffle(formulas)
+
+#     session['shuffled_formulas'] = [formula.to_dict() for formula in formulas]
+#     session['quiz_index'] = 0
+#     session['correct_answers'] = 0
+
+#     return redirect(url_for('main.take_quiz'))
 
 @main.route('/take_quiz', methods=['GET', 'POST'])
 def take_quiz():
@@ -85,9 +122,11 @@ def take_quiz():
         answer = request.form['answer']
         correct = request.form['correct']
 
-        if answer == correct:
+        # Проверка правильности ответа
+        if answer.strip() == correct.strip():
             session['correct_answers'] += 1
 
+        # Увеличиваем индекс и проверяем, есть ли еще вопросы
         session['quiz_index'] += 1
 
     quiz_index = session.get('quiz_index', 0)
@@ -100,6 +139,7 @@ def take_quiz():
     formula = Formula(id=formula_data['id'], name=formula_data['name'], description=formula_data['description'], formula=formula_data['formula'])
 
     return render_template('quiz.html', formula=formula)
+
 
 @main.route('/quiz_complete')
 def quiz_complete():
