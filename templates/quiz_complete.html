@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Результаты теста</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Викторина завершена</title>
 </head>
 <body>
-    <h1>Тест завершен</h1>
-    <p>Вы ответили правильно на {{ correct_answers }} из {{ total_questions }} вопросов.</p>
-    <a href="{{ url_for('list_modules') }}">Вернуться к модулям</a>
+    <h1>Викторина завершена!</h1>
+    <p>Правильные ответы: {{ correct_answers }} из {{ total_questions }}</p>
+    <a href="{{ url_for('main.home') }}">На главную</a>
 </body>
 </html>

@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ module.name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Формулы модуля: {{ module.name }}</title>
 </head>
 <body>
-    <h1>Формулы для модуля {{ module.name }}</h1>
+    <h1>Формулы модуля: {{ module.name }}</h1>
     <ul>
         {% for formula in formulas %}
-            <li>{{ formula.name }}: {{ formula.formula }} ({{ formula.description }})</li>
+            <li>{{ formula.name }}: {{ formula.formula }}</li>
         {% endfor %}
     </ul>
-    <a href="{{ url_for('list_modules') }}">На список модулей</a>
+    <a href="{{ url_for('main.add_formula') }}">Добавить формулу</a>
+    <a href="{{ url_for('main.list_modules') }}">На главную</a>
 </body>
 </html>

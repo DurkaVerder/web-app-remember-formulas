@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Главная</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
 </head>
 <body>
-    <h1>Добро пожаловать на сайт формул</h1>
-    <a href="{{ url_for('list_modules') }}">Посмотреть модули</a>
-    <a href="{{ url_for('register') }}">Регистрация</a>
+    <h1>Добро пожаловать!</h1>
+    <a href="{{ url_for('main.list_modules') }}">Список модулей</a>
+    <a href="{{ url_for('main.register') }}">Регистрация</a>
 </body>
 </html>

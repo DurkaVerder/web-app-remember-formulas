@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Модули</title>
 </head>
 <body>
-    <h1>Выберите модуль</h1>
+    <h1>Список модулей</h1>
     <ul>
         {% for module in modules %}
-            <li>
-                <h2>{{ module.name }}</h2>
-                <p>{{ module.description }}</p>
-                <a href="{{ url_for('list_formulas', module_id=module.id) }}">Посмотреть формулы</a>
-                <a href="{{ url_for('quiz', topic=module.id) }}" style="margin-left: 10px;">Начать тест</a>
-            </li>
+            <li><a href="{{ url_for('main.list_formulas', module_id=module.id) }}">{{ module.name }}</a></li>
         {% endfor %}
     </ul>
-    <a href="{{ url_for('register') }}">Зарегистрироваться</a>
+    <a href="{{ url_for('main.home') }}">На главную</a>
 </body>
 </html>
