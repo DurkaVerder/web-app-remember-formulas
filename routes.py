@@ -104,18 +104,6 @@ def start_quiz(module_id):
     return redirect(url_for('main.take_quiz'))
 
 
-# @main.route('/quiz/<int:topic>', methods=['GET'])
-# def quiz(topic):
-#     session['current_topic'] = topic
-#     formulas = Formula.query.filter_by(idmodul=topic).all()
-#     random.shuffle(formulas)
-
-#     session['shuffled_formulas'] = [formula.to_dict() for formula in formulas]
-#     session['quiz_index'] = 0
-#     session['correct_answers'] = 0
-
-#     return redirect(url_for('main.take_quiz'))
-
 @main.route('/take_quiz', methods=['GET', 'POST'])
 def take_quiz():
     if request.method == 'POST':
@@ -126,7 +114,6 @@ def take_quiz():
         if answer.strip() == correct.strip():
             session['correct_answers'] += 1
 
-        # Увеличиваем индекс и проверяем, есть ли еще вопросы
         session['quiz_index'] += 1
 
     quiz_index = session.get('quiz_index', 0)
