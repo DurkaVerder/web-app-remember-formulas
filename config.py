@@ -1,4 +1,4 @@
-# config.py
+# config
 class Config:
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:durka@localhost/web-site-for-remember-formulas'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
