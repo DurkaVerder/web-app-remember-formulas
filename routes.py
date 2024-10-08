@@ -1,98 +1,95 @@
-# routes
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, jsonify, request, session
 from models import db, Modul, Formula, User, UsersFormulas, UsersModuls
 import random
 
 main = Blueprint('main', __name__)
 
+# Главная страница
 @main.route('/')
 def home():
-    return render_template('home.html')
+    return jsonify({"message": "Welcome to the Formula Memory App!"})
 
-@main.route('/modules')
-def list_modules():
+# Получение всех модулей
+@main.route('/api/modules', methods=['GET'])
+def api_list_modules():
     modules = Modul.query.all()
-    return render_template('modules.html', modules=modules)
+    return jsonify([module.to_dict() for module in modules])
 
-@main.route('/module/<int:module_id>')
-def list_formulas(module_id):
+# Получение всех формул по ID модуля
+@main.route('/api/module/<int:module_id>/formulas', methods=['GET'])
+def api_list_formulas(module_id):
     module = Modul.query.get_or_404(module_id)
     formulas = Formula.query.filter_by(idmodul=module_id).all()
-    return render_template('formulas.html', module=module, formulas=formulas)
+    return jsonify([formula.to_dict() for formula in formulas])
 
-@main.route('/add_formula', methods=['GET', 'POST'])
-def add_formula():
-    if request.method == 'POST':
-        name = request.form['name']
-        description = request.form['description']
-        formula = request.form['formula']
-        module_id = request.form['module_id']
+# Добавление новой формулы
+@main.route('/api/add_formula', methods=['POST'])
+def api_add_formula():
+    data = request.json
+    name = data.get('name')
+    description = data.get('description')
+    formula = data.get('formula')
+    module_id = data.get('module_id')
 
-        new_formula = Formula(name=name, description=description, formula=formula, idmodul=module_id)
-        db.session.add(new_formula)
-        db.session.commit()
+    new_formula = Formula(name=name, description=description, formula=formula, idmodul=module_id)
+    db.session.add(new_formula)
+    db.session.commit()
 
-        return redirect(url_for('main.list_formulas', module_id=module_id))
+    return jsonify({"message": "Formula added successfully!"}), 201
 
-    modules = Modul.query.all()
-    return render_template('add_formula.html', modules=modules)
+# Регистрация пользователя
+@main.route('/api/register', methods=['POST'])
+def api_register():
+    data = request.json
+    login = data.get('login')
+    password = data.get('password')
+    nickname = data.get('nickname')
+    status = data.get('status')
 
-@main.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        login = request.form['login']
-        password = request.form['password']
-        nickname = request.form['nickname']
-        status = request.form['status']
+    new_user = User(login=login, password=password, nickname=nickname, status=status)
+    db.session.add(new_user)
+    db.session.commit()
 
-        new_user = User(login=login, password=password, nickname=nickname, status=status)
-        db.session.add(new_user)
-        db.session.commit()
+    return jsonify({"message": "User registered successfully!"}), 201
 
-        return redirect(url_for('main.home'))
+# Вход пользователя
+@main.route('/api/login', methods=['POST'])
+def api_login():
+    data = request.json
+    login_input = data.get('login')
+    password_input = data.get('password')
 
-    return render_template('register.html')
+    user = User.query.filter_by(login=login_input, password=password_input).first()
 
+    if user:
+        session['user_id'] = user.id
+        session['nickname'] = user.nickname
+        return jsonify({"message": "Login successful!", "nickname": user.nickname}), 200
+    else:
+        return jsonify({"message": "Invalid login or password."}), 401
 
-@main.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        login_input = request.form['login']
-        password_input = request.form['password']
-        
-        user = User.query.filter_by(login=login_input, password=password_input).first()
-        
-        if user:
-            session['user_id'] = user.id
-            session['nickname'] = user.nickname
-            return redirect(url_for('main.home'))
-        else:
-            return render_template('login.html', error="Неправильный логин или пароль.")
-
-    return render_template('login.html')
-
-
-
-@main.route('/assign_formula_to_user/<int:user_id>/<int:formula_id>')
+# Назначить формулу пользователю
+@main.route('/api/assign_formula_to_user/<int:user_id>/<int:formula_id>', methods=['POST'])
 def assign_formula_to_user(user_id, formula_id):
     user_formula = UsersFormulas(iduser=user_id, idformula=formula_id)
     db.session.add(user_formula)
     db.session.commit()
-    return f"Формула {formula_id} назначена пользователю {user_id}"
+    return jsonify({"message": f"Formula {formula_id} assigned to user {user_id}"}), 200
 
-@main.route('/assign_module_to_user/<int:user_id>/<int:module_id>')
+# Назначить модуль пользователю
+@main.route('/api/assign_module_to_user/<int:user_id>/<int:module_id>', methods=['POST'])
 def assign_module_to_user(user_id, module_id):
     user_module = UsersModuls(iduser=user_id, idmodul=module_id)
     db.session.add(user_module)
     db.session.commit()
-    return f"Модуль {module_id} назначен пользователю {user_id}"
+    return jsonify({"message": f"Module {module_id} assigned to user {user_id}"}), 200
 
-
-@main.route('/quiz/<int:module_id>', methods=['GET'])
+# Старт квиза по модулю
+@main.route('/api/quiz/<int:module_id>', methods=['GET'])
 def start_quiz(module_id):
     session['current_module'] = module_id
     formulas = Formula.query.filter_by(idmodul=module_id).all()
-    
+
     # Перемешиваем формулы
     random.shuffle(formulas)
 
@@ -101,36 +98,38 @@ def start_quiz(module_id):
     session['quiz_index'] = 0
     session['correct_answers'] = 0
 
-    return redirect(url_for('main.take_quiz'))
+    return jsonify({"message": "Quiz started!", "formulas": session['shuffled_formulas']}), 200
 
-
-@main.route('/take_quiz', methods=['GET', 'POST'])
+# Квиз - отвечать на вопросы
+@main.route('/api/take_quiz', methods=['POST'])
 def take_quiz():
-    if request.method == 'POST':
-        answer = request.form['answer']
-        correct = request.form['correct']
+    data = request.json
+    answer = data.get('answer')
+    correct = data.get('correct')
 
-        # Проверка правильности ответа
-        if answer.strip() == correct.strip():
-            session['correct_answers'] += 1
+    # Проверка правильности ответа
+    if answer.strip() == correct.strip():
+        session['correct_answers'] += 1
 
-        session['quiz_index'] += 1
+    session['quiz_index'] += 1
 
     quiz_index = session.get('quiz_index', 0)
     shuffled_formulas = session.get('shuffled_formulas', [])
 
     if quiz_index >= len(shuffled_formulas):
-        return redirect(url_for('main.quiz_complete'))
+        return jsonify({"message": "Quiz complete", "correct_answers": session['correct_answers']}), 200
 
-    formula_data = shuffled_formulas[quiz_index]
-    formula = Formula(id=formula_data['id'], name=formula_data['name'], description=formula_data['description'], formula=formula_data['formula'])
+    next_formula = shuffled_formulas[quiz_index]
+    return jsonify({"next_formula": next_formula}), 200
 
-    return render_template('quiz.html', formula=formula)
-
-
-@main.route('/quiz_complete')
+# Завершение квиза
+@main.route('/api/quiz_complete', methods=['GET'])
 def quiz_complete():
     correct_answers = session.get('correct_answers', 0)
     total_questions = len(session.get('shuffled_formulas', []))
 
-    return render_template('quiz_complete.html', correct_answers=correct_answers, total_questions=total_questions)
+    return jsonify({
+        "message": "Quiz complete!",
+        "correct_answers": correct_answers,
+        "total_questions": total_questions
+    }), 200
