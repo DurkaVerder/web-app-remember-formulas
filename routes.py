@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request, session
 from models import db, Modul, Formula, User, UsersFormulas, UsersModuls
+import service
 import random
 
 main = Blueprint('main', __name__)
@@ -46,6 +47,8 @@ def api_register():
     nickname = data.get('nickname')
     status = data.get('status')
 
+    if not service.check_login(login) and service.check_password(password):
+        return jsonify({"message": "Invalid login or password"}), 401
     new_user = User(login=login, password=password, nickname=nickname, status=status)
     db.session.add(new_user)
     db.session.commit()
@@ -98,7 +101,7 @@ def start_quiz(module_id):
     session['quiz_index'] = 0
     session['correct_answers'] = 0
 
-    return jsonify({"message": "Quiz started!", "formulas": session['shuffled_formulas']}), 200
+    return jsonify({"formulas": session['shuffled_formulas']}), 200
 
 # Квиз - отвечать на вопросы
 @main.route('/api/take_quiz', methods=['POST'])
