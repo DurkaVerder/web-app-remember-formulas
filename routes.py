@@ -18,20 +18,6 @@ def api_list_formulas(module_id):
     formulas = Formula.query.filter_by(idmodul=module_id).all()
     return jsonify([formula.to_dict() for formula in formulas])
 
-# Добавление новой формулы
-@main.route('/api/add_formula', methods=['POST'])
-def api_add_formula():
-    data = request.json
-    name = data.get('name')
-    description = data.get('description')
-    formula = data.get('formula')
-    module_id = data.get('module_id')
-
-    new_formula = Formula(name=name, description=description, formula=formula, idmodul=module_id)
-    db.session.add(new_formula)
-    db.session.commit()
-
-    return jsonify({"message": "Formula added successfully!"}), 201
 
 # Регистрация пользователя
 @main.route('/api/register', methods=['POST'])
@@ -81,6 +67,13 @@ def assign_module_to_user(user_id, module_id):
     db.session.add(user_module)
     db.session.commit()
     return jsonify({"message": f"Module {module_id} assigned to user {user_id}"}), 200
+
+
+
+
+# Это пробник квиза, он будет совершенно другой
+
+
 
 # Старт квиза по модулю
 @main.route('/api/quiz/<int:module_id>', methods=['GET'])
