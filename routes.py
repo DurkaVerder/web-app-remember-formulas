@@ -5,11 +5,6 @@ import random
 
 main = Blueprint('main', __name__)
 
-# Главная страница
-@main.route('/')
-def home():
-    return jsonify({"message": "Welcome to the Formula Memory App!"})
-
 # Получение всех модулей
 @main.route('/api/modules', methods=['GET'])
 def api_list_modules():
@@ -45,7 +40,7 @@ def api_register():
     login = data.get('login')
     password = data.get('password')
     nickname = data.get('nickname')
-    status = data.get('status')
+    status = 'beginner'
 
     if not service.check_login(login) and service.check_password(password):
         return jsonify({"message": "Invalid login or password"}), 401
