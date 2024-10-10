@@ -7,6 +7,32 @@ user = Blueprint('user', __name__)
 # Регистрация пользователя
 @user.route('/api/register', methods=['POST'])
 def api_register():
+    return register()
+
+# Вход пользователя
+@user.route('/api/login', methods=['POST'])
+def api_login():
+    return login()
+    
+
+
+
+def login():
+    data = request.json
+    login_input = data.get('login')
+    password_input = data.get('password')
+
+    user = User.query.filter_by(login=login_input, password=password_input).first()
+
+    if user:
+        session['user_id'] = user.id
+        session['nickname'] = user.nickname
+        return jsonify({"message": "Login successful!", "nickname": user.nickname}), 200
+    else:
+        return jsonify({"message": "Invalid login or password."}), 401
+    
+
+def register():
     data = request.json
     login = data.get('login')
     password = data.get('password')
@@ -20,19 +46,3 @@ def api_register():
     db.session.commit()
 
     return jsonify({"message": "User registered successfully!"}), 201
-
-# Вход пользователя
-@user.route('/api/login', methods=['POST'])
-def api_login():
-    data = request.json
-    login_input = data.get('login')
-    password_input = data.get('password')
-
-    user = User.query.filter_by(login=login_input, password=password_input).first()
-
-    if user:
-        session['user_id'] = user.id
-        session['nickname'] = user.nickname
-        return jsonify({"message": "Login successful!", "nickname": user.nickname}), 200
-    else:
-        return jsonify({"message": "Invalid login or password."}), 401

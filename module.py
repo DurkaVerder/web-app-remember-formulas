@@ -7,16 +7,12 @@ module = Blueprint('module', __name__)
 # Получение всех модулей
 @module.route('/api/modules', methods=['GET'])
 def api_list_modules():
-    modules = Modul.query.all()
-    return jsonify([module.to_dict() for module in modules])
+    return list_modules()
 
 # Получение всех формул по ID модуля
 @module.route('/api/module/<int:module_id>/formulas', methods=['GET'])
 def api_list_formulas(module_id):
-    module = Modul.query.get_or_404(module_id)
-    formulas = Formula.query.filter_by(idmodul=module_id).all()
-    return jsonify([formula.to_dict() for formula in formulas])
-
+    return list_formulas(module_id)
 
 
 
@@ -38,5 +34,12 @@ def assign_module_to_user(user_id, module_id):
 
 
 
+def list_modules():
+    modules = Modul.query.all()
+    return jsonify([module.to_dict() for module in modules])
 
 
+def list_formulas(module_id):
+    module = Modul.query.get_or_404(module_id)
+    formulas = Formula.query.filter_by(idmodul=module_id).all()
+    return jsonify([formula.to_dict() for formula in formulas])
