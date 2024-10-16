@@ -119,7 +119,6 @@ def finish_quiz():
 
     # Отправляем результаты
     return jsonify({
-        "message": "Quiz complete!",
         "correct_answers": correct_answers,
         "incorrect_answers": incorrect_answers,
         "results": results
