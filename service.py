@@ -1,4 +1,4 @@
-from config import CHIPHER_KEY
+from config import Config
 def check_login(login):
     return len(login) >= 6 and all('A' <= char <= 'Z' or 'a' <= char <= 'z' or '0' <= char <= '9' for char in login)
 
@@ -24,7 +24,7 @@ def encrypt_password(password: str) -> str:
     encrypted = ""
     for char in password:
         if char.isalpha():
-            shift = KEY % 26
+            shift = Config.CHIPHER_KEY % 26
             base = ord('a') if char.islower() else ord('A')
             encrypted += chr((ord(char) - base + shift) % 26 + base)
         else:

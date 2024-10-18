@@ -103,7 +103,7 @@ def check_answer():
     # Переходим к следующему вопросу
     quiz['current_index'] += 1
     if quiz['current_index'] >= len(quiz['questions']):
-        return jsonify({"message": "Quiz finished", "results": quiz['results']}), 200
+        return jsonify({"results": quiz['results']}), 200
     else:
         return next_question()
 
