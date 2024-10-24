@@ -27,7 +27,7 @@ def login():
     if user:
         session['user_id'] = user.id
         session['nickname'] = user.nickname
-        return jsonify({"message": "Login successful!", "nickname": user.nickname}), 200
+        return jsonify({"nickname": user.nickname}), 200
     else:
         return jsonify({"message": "Invalid login or password."}), 401
     
@@ -45,4 +45,4 @@ def register():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": "User registered successfully!"}), 201
+    return jsonify({"message": "User registered successfully"}), 201
