@@ -11,9 +11,6 @@ env/
 .venv/
 .ENV/
 
-# SQLite database
-*.db
-*.sqlite3
 
 # Flask/Python Logs
 *.log
