@@ -2,7 +2,6 @@ from flask import Blueprint, jsonify, request
 from models import db, Modul, Formula, User, UsersFormulas, UsersModuls
 from flask_restx import Api, Resource, fields, Namespace
 
-module = Blueprint('module', __name__)
 module_ns = Namespace('module', description='Operations related to modules')
 
 # Определение модели для Swagger

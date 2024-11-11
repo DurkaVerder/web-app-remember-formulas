@@ -3,7 +3,6 @@ from models import db, User
 from flask_restx import Api, Namespace, Resource, fields
 import service
 
-user_bp = Blueprint('user', __name__)
 user_ns = Namespace('user', description="User operations")
 
 # Модель для регистрации пользователя
