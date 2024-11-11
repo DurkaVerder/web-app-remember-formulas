@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv/
+.ENV/
+
+
+# Flask/Python Logs
+*.log
+*.pot
+*.pyc
+instance/
+*.mypy_cache/
+.coverage
+.cache/
+*.pytest_cache/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints
+
+# Environment variables
+.env
+*.env
+
+# PyInstaller
+*.spec
+
+# macOS
+.DS_Store
+
+# JetBrains IDEs
+.idea/
+
+# VS Code
+.vscode/
+
+# PyCharm
+*.iml
+
+# Coverage reports
+htmlcov/
+
+# pytest
+.pytest_cache/
+
+# Flask cache and session data
+flask_session/
+__pycache__/
+*.pyc

@@ -4,7 +4,7 @@ db = SQLAlchemy()
 
 class Modul(db.Model):
     __tablename__ = 'moduls'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
 
@@ -17,7 +17,7 @@ class Modul(db.Model):
 
 class User(db.Model):
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     login = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     nickname = db.Column(db.String(255))
@@ -25,7 +25,7 @@ class User(db.Model):
 
 class Formula(db.Model):
     __tablename__ = 'formulas'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False, unique=True)
     description = db.Column(db.Text, nullable=False)
     formula = db.Column(db.Text, nullable=False)
