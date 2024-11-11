@@ -1,24 +1,29 @@
 from flask import Blueprint, jsonify, request, session
 import random
 from models import db, Formula
-from flask_restx import Resource, fields
+from flask_restx import Resource, fields, Namespace
 
-quiz = Blueprint('quiz', __name__)
+quiz_ns = Namespace('quiz', description='Operations related to quizzes')
 
 # Модели данных для документации
-check_answers_model = {
+check_answers_model = quiz_ns.model('CheckAnswers', {
     'answers': fields.List(fields.String, required=True, description='Массив ответов пользователя')
-}
+})
 
 # Маршрут для старта квиза с отправкой всех вопросов сразу
-@quiz.route('/api/quiz/start/<int:module_id>', methods=['GET'])
-def start_quiz_route(module_id):
-    return start_quiz(module_id)
+@quiz_ns.route('/start/<int:module_id>')
+class StartQuiz(Resource):
+    @quiz_ns.doc(tags=['Quiz'], description="Старт квиза для указанного модуля с отправкой всех вопросов.")
+    def get(self, module_id):
+        return start_quiz(module_id)
 
 # Маршрут для проверки ответов
-@quiz.route('/api/quiz/submit_answers', methods=['POST'])
-def submit_answers_route():
-    return submit_answers()
+@quiz_ns.route('/submit_answers')
+class SubmitAnswers(Resource):
+    @quiz_ns.expect(check_answers_model)
+    @quiz_ns.doc(tags=['Quiz'], description="Отправить ответы на все вопросы и получить результаты квиза.")
+    def post(self):
+        return submit_answers()
 
 # Функция для старта квиза и отправки всех вопросов
 def start_quiz(module_id):
