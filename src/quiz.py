@@ -60,7 +60,7 @@ def start_quiz(module_id):
         'incorrect_answers': 0
     }
     
-    return jsonify({"questions": questions}), 200
+    return {"questions": questions}, 200
 
 # Функция для проверки ответов
 def submit_answers():
@@ -97,11 +97,12 @@ def submit_answers():
     total_questions = len(quiz['questions'])
     accuracy = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
     
+
     # Возвращаем результат
-    return jsonify({
+    return {
         "correct_answers": correct_answers,
         "incorrect_answers": incorrect_answers,
         "total_questions": total_questions,
         "accuracy": accuracy,
         "results": results
-    }), 200
+    }, 200

@@ -76,9 +76,23 @@ class AssignModule(Resource):
         return {"message": f"Module {module_id} assigned to user {user_id}"}, 200
 
 
-def list_modules():
+def list_modules(user_id=None):
     modules = Modul.query.all()
-    return [module.to_dict() for module in modules]
+    module_list = []
+
+    for module in modules:
+        module_data = module.to_dict()
+        
+        if user_id:
+            user_module = UsersModuls.query.filter_by(iduser=user_id, idmodul=module.id).first()
+            module_data['completed'] = bool(user_module)
+        else:
+            module_data['completed'] = False 
+
+        module_list.append(module_data)
+
+    return module_list
+
 
 
 def list_formulas(module_id):
