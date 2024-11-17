@@ -38,7 +38,7 @@ class AddModule(Resource):
         db.session.add(new_module)
         db.session.commit()
 
-        return jsonify(new_module.to_dict()), 201  # Возвращаем корректный JSON-ответ
+        return new_module.to_dict(), 201  # Возвращаем корректный JSON-ответ
 
 # Маршрут для добавления формулы
 @formula_np.route('/add_formula')
@@ -68,4 +68,4 @@ class AddFormula(Resource):
         db.session.add(new_formula)
         db.session.commit()
 
-        return jsonify(new_formula.to_dict()), 201  # Возвращаем корректный JSON-ответ
+        return new_formula.to_dict(), 201  # Возвращаем корректный JSON-ответ
