@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request, session
 import random
 from models import db, Formula
 from flask_restx import Resource, fields, Namespace
+from user import IsAuthorization
 
 quiz_ns = Namespace('quiz', description='Operations related to quizzes')
 
@@ -27,6 +28,11 @@ class SubmitAnswers(Resource):
 
 # Функция для старта квиза и отправки всех вопросов
 def start_quiz(module_id):
+
+    # if not IsAuthorization():
+    #     return {"message": "User not authorization"}, 401
+
+
     # Получаем все формулы для модуля
     formulas = Formula.query.filter_by(idmodul=module_id).all()
     if len(formulas) < 6:

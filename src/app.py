@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 api = Api(app)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 application = app
 app.config.from_object(Config)
 db.init_app(app)
@@ -19,7 +19,7 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-# Добавляем Namespace напрямую в API
+
 api.add_namespace(module_ns)
 api.add_namespace(modul_np)
 api.add_namespace(formula_np)

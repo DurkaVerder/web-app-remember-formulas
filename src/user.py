@@ -1,7 +1,10 @@
 from flask import Blueprint, jsonify, request, session
 from models import db, User
 from flask_restx import Api, Namespace, Resource, fields
+import jwt
 import service
+from config import Config
+
 
 user_ns = Namespace('user', description="User operations")
 
@@ -48,6 +51,7 @@ def login():
     if user:
         session['user_id'] = user.id
         session['nickname'] = user.nickname
+        session['token'] = jwt.encode({"nickname": user.nickname}, Config.SECRET_KEY, algorithm="HS256")
         return {"nickname": user.nickname}, 200
     else:
         return {"message": "Invalid login or password."}, 401
@@ -77,3 +81,12 @@ def register():
     db.session.commit()
 
     return {"message": "User registered successfully"}, 201
+
+
+
+
+def IsAuthorization() -> bool: 
+    token = session['token']
+    if not jwt.decode(token, Config.SECRET_KEY, "HS256"):
+        return False
+    return True
