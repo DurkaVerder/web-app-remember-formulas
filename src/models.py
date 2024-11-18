@@ -23,6 +23,11 @@ class User(db.Model):
     nickname = db.Column(db.String(255))
     status = db.Column(db.String(50))
 
+    def to_dict(self):
+        return {
+            "nickname": self.nickname
+        }
+
 class Formula(db.Model):
     __tablename__ = 'formulas'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

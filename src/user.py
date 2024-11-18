@@ -51,8 +51,8 @@ def login():
     if user:
         session['user_id'] = user.id
         session['nickname'] = user.nickname
-        session['token'] = jwt.encode({"nickname": user.nickname}, Config.SECRET_KEY, algorithm="HS256")
-        return {"nickname": user.nickname}, 200
+        #session['token'] = jwt.encode({"nickname": user.nickname}, Config.SECRET_KEY, algorithm="HS256")
+        return {"nickname": user.to_dict()}, 200
     else:
         return {"message": "Invalid login or password."}, 401
 
@@ -66,14 +66,15 @@ def register():
     status = 'beginner'
 
     # Проверяем правильность логина и пароля
-    if not service.check_login(login) or not service.check_password(password):
+    if not service.check_password(password):
         return {"message": "Invalid login or password"}, 401
 
     # Проверяем, существует ли уже пользователь с таким логином
     existing_user = User.query.filter_by(login=login).first()
-    print(existing_user)
+
     if existing_user:
-        return {"message": "User already exists"}, 409
+        return {"message": "User already exists",
+                "user" : existing_user.to_dict()}, 409
 
     # Создаем нового пользователя
     new_user = User(login=login, password=password, nickname=nickname, status=status)
