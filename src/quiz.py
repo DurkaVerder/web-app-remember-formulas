@@ -28,34 +28,31 @@ class SubmitAnswers(Resource):
 
 # Функция для старта квиза и отправки всех вопросов
 def start_quiz(module_id):
-
     # if not IsAuthorization():
     #     return {"message": "User not authorization"}, 401
-
 
     # Получаем все формулы для модуля
     formulas = Formula.query.filter_by(idmodul=module_id).all()
     if len(formulas) < 6:
         return {"message": "Not enough formulas in the module."}, 400
-    
+
     # Случайно выбираем 6 вопросов
     selected_formulas = random.sample(formulas, 6)
-    
+
     # Создаем вопросы и варианты ответов
     questions = []
     for formula in selected_formulas:
-        correct_answer = formula.formula
+        correct_name = formula.name
         all_formulas = Formula.query.filter(Formula.id != formula.id).all()
-        wrong_answers = random.sample([f.formula for f in all_formulas], 3)
-        options = wrong_answers + [correct_answer]
+        wrong_names = random.sample([f.name for f in all_formulas], 3)
+        options = wrong_names + [correct_name]
         random.shuffle(options)
-        
+
         questions.append({
             "id": formula.id,
-            "question": formula.name,
-            "description": formula.description,
+            "question": formula.formula,
             "options": options,
-            "correct_formula_latex": f"\\({correct_answer}\\)"  # Формат LaTeX для формулы
+            "correct_name": correct_name
         })
     
     # Сохраняем вопросы в сессии
