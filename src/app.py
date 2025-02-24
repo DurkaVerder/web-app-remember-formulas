@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_restx import Api
-
 from config import Config
 from models import db
 from module import module_ns
@@ -11,7 +10,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 api = Api(app)
-CORS(app, resources={r"/*" : {"origins" : "*"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 application = app
 app.config.from_object(Config)
 db.init_app(app)
@@ -19,11 +18,10 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-
 api.add_namespace(module_ns)
 api.add_namespace(modul_np)
 api.add_namespace(formula_np)
-api.add_namespace(quiz_ns)  
+api.add_namespace(quiz_ns)
 api.add_namespace(user_ns)
 
 if __name__ == '__main__':

@@ -22,10 +22,15 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     nickname = db.Column(db.String(255))
     status = db.Column(db.String(50))
+    avatar = db.Column(db.String(255))
 
     def to_dict(self):
         return {
-            "nickname": self.nickname
+            "id": self.id,
+            "login": self.login,
+            "nickname": self.nickname,
+            "status": self.status,
+            "avatar": self.avatar
         }
 
 class Formula(db.Model):
@@ -56,3 +61,33 @@ class UsersModuls(db.Model):
     __tablename__ = 'usersmoduls'
     iduser = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     idmodul = db.Column(db.Integer, db.ForeignKey('moduls.id'), primary_key=True)
+
+class Test(db.Model):
+    __tablename__ = 'tests'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    success_rate = db.Column(db.Integer, nullable=False)
+    section = db.Column(db.String(255), nullable=False)
+
+    def to_dict(self):
+        return {
+            "date": self.date.strftime('%d.%m.%Y'),
+            "success_rate": self.success_rate,
+            "section": self.section
+        }
+
+class Topic(db.Model):
+    __tablename__ = 'topics'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    tests_passed = db.Column(db.Integer, nullable=False)
+    success_rate = db.Column(db.Integer, nullable=False)
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "tests_passed": self.tests_passed,
+            "success_rate": self.success_rate
+        }
