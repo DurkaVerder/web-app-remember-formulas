@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request, session
 import random
 from models import db, Formula, Test, Topic, Modul
 from flask_restx import Resource, fields, Namespace
-from jwt_utils import IsAuthorized  # Предполагаем, что файл называется jwt.py
+from jwt_utils import IsAuthorized  
 from datetime import datetime
 
 quiz_ns = Namespace('quiz', description='Operations related to quizzes')
