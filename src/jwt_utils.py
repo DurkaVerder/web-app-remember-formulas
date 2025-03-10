@@ -24,9 +24,10 @@ def verify_token(token):
 def IsAuthorized():
     token = request.headers.get("Authorization")
     if not token:
-        return {"message": "Token is missing"}, 401
+        return {"error": "Token is missing", "status" : 401}
 
     if token.startswith("Bearer "):
         token = token.split(" ")[1]
 
     return verify_token(token)
+

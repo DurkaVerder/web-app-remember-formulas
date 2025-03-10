@@ -17,6 +17,10 @@ login_model = user_ns.model('Login', {
     'password': fields.String(required=True, description='User password')
 })
 
+download_avatar_model = user_ns.model('DownloadAvatar', {
+    'path': fields.String(required=True, description='Path to avatar file')
+})
+
 @user_ns.route('/register')
 class Register(Resource):
     @user_ns.expect(register_model)
@@ -61,6 +65,16 @@ class Profile(Resource):
 
         return profile_data, 200
 
+# Протестить !!!!!!!!! 
+@user_ns.route('/validjwt')
+class ValidJWT(Resource):
+    @user_ns.doc(description="Check if JWT token from Authorization header is valid.")
+    def get(self):
+        auth_result = IsAuthorized()
+        if "error" in auth_result:
+            return {"message": auth_result["error"]}, auth_result["status"]
+        return {"message": "Token is valid"}, 200
+
 def login():
     data = request.json
     login_input = data.get('login')
@@ -95,3 +109,23 @@ def register():
     db.session.commit()
 
     return {"message": "User registered successfully"}, 201
+
+@user_ns.route('/downloadavatar')
+class Download(Resource):
+    @user_ns.expect(download_avatar_model)
+    @user_ns.doc(
+        description="Download a file.",  # Указываем, что требуется авторизация
+    )
+    def post(self):
+        data = request.json
+        path = data.get('path')
+        auth_result = IsAuthorized()
+        if "error" in auth_result:  # Проверяем, есть ли ошибка
+            return {"message": auth_result["error"]}, auth_result["status"]
+        
+        # Если ошибок нет, auth_result — это словарь с данными токена
+        user_id = auth_result['user_id']
+        user = User.query.filter_by(id=user_id).first()
+        user.avatar = path
+        return {"message": "Avatar downloaded successfully"}, 200
+
