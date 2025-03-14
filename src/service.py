@@ -1,4 +1,5 @@
 from config import Config
+
 def check_login(login):
     return len(login) >= 6 and all('A' <= char <= 'Z' or 'a' <= char <= 'z' or '0' <= char <= '9' for char in login)
 
