@@ -20,6 +20,12 @@ def migrate_database():
     
 
     cursor.execute('UPDATE tests SET end_time = CURRENT_TIMESTAMP WHERE end_time IS NULL')
+
+    try:
+        cursor.execute('ALTER TABLE achievements ADD COLUMN image_path VARCHAR(255)')
+    except Exception as e:
+        print("Поле image_path уже существует, пропускаем")
+   
    
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS achievements (

@@ -120,10 +120,12 @@ class Achievement(db.Model):
     achievement_name = db.Column(db.String(255), nullable=False)
     achievement_description = db.Column(db.Text, nullable=False)
     date_achieved = db.Column(db.Date, nullable=False, default=datetime.now)
+    image_path = db.Column(db.String(255), nullable=True)
 
     def to_dict(self):
         return {
             "achievement_name": self.achievement_name,
             "achievement_description": self.achievement_description,
-            "date_achieved": self.date_achieved.strftime('%d.%m.%Y')
+            "date_achieved": self.date_achieved.strftime('%d.%m.%Y'),
+            "image_path": self.image_path
         }

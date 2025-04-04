@@ -2,18 +2,54 @@ from models import db, User, Topic, Test, UsersFormulas, Modul, Achievement
 from datetime import datetime, timedelta
 
 ACHIEVEMENTS = {
-    "Начинающий физик": "Вы прошли свою первую тему и освоили 5 формул.",
-    "Скоростной решатель": "Вы решили тест меньше чем за минуту.",
-    "Физик-перфекционист": "Вы решили тест с первого раза без единой ошибки.",
-    "Мастер Энергии": "Вы успешно прошли все темы и задачи, связанные с энергией и работой.",
-    "Кинематический гений": "Вы решили тест по кинематике на 100%.",
-    "Динамический мастер": "Вы решили тест по динамике на 100%.",
-    "Статистический эксперт": "Вы решили тест по статике на 100%.",
-    "Энергетический виртуоз": "Вы решили тест по энергетике на 100%.",
-    "Термофизический специалист": "Вы решили тест по термофизике на 100%.",
-    "Формульный коллекционер": "Вы освоили 20 различных формул.",
-    "Тестовый марафонец": "Вы прошли 10 тестов за один день.",
-    "Недельный стрик": "Вы проходили тесты каждый день в течение недели."
+    "Начинающий физик": {
+        "description": "Вы прошли свою первую тему и освоили 5 формул.",
+        "image_path": "/static/achievements/beginner_physicist.png"
+    },
+    "Скоростной решатель": {
+        "description": "Вы решили тест меньше чем за минуту.",
+        "image_path": "/static/achievements/speed_solver.png"
+    },
+    "Физик-перфекционист": {
+        "description": "Вы решили тест с первого раза без единой ошибки.",
+        "image_path": "/static/achievements/perfectionist.png"
+    },
+    "Мастер Энергии": {
+        "description": "Вы успешно прошли все темы и задачи, связанные с энергией и работой.",
+        "image_path": "/static/achievements/energy_master.png"
+    },
+    "Кинематический гений": {
+        "description": "Вы решили тест по кинематике на 100%.",
+        "image_path": "/static/achievements/kinematics_genius.png"
+    },
+    "Динамический мастер": {
+        "description": "Вы решили тест по динамике на 100%.",
+        "image_path": "/static/achievements/dynamics_master.png"
+    },
+    "Статистический эксперт": {
+        "description": "Вы решили тест по статике на 100%.",
+        "image_path": "/static/achievements/statics_expert.png"
+    },
+    "Энергетический виртуоз": {
+        "description": "Вы решили тест по энергетике на 100%.",
+        "image_path": "/static/achievements/energy_virtuoso.png"
+    },
+    "Термофизический специалист": {
+        "description": "Вы решили тест по термофизике на 100%.",
+        "image_path": "/static/achievements/thermophysics_specialist.png"
+    },
+    "Формульный коллекционер": {
+        "description": "Вы освоили 20 различных формул.",
+        "image_path": "/static/achievements/formula_collector.png"
+    },
+    "Тестовый марафонец": {
+        "description": "Вы прошли 10 тестов за один день.",
+        "image_path": "/static/achievements/test_marathoner.png"
+    },
+    "Недельный стрик": {
+        "description": "Вы проходили тесты каждый день в течение недели.",
+        "image_path": "/static/achievements/weekly_streak.png"
+    }
 }
 
 def check_achievements(user_id):
@@ -90,7 +126,8 @@ def add_achievement(user_id, achievement_name):
         new_achievement = Achievement(
             user_id=user_id,
             achievement_name=achievement_name,
-            achievement_description=ACHIEVEMENTS[achievement_name]
+            achievement_description=ACHIEVEMENTS[achievement_name]["description"],
+            image_path=ACHIEVEMENTS[achievement_name]["image_path"]
         )
         db.session.add(new_achievement)
         db.session.commit()
