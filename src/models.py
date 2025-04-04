@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -66,6 +67,8 @@ class Test(db.Model):
     __tablename__ = 'tests'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    end_time = db.Column(db.DateTime, nullable=False, default=datetime.now)
     date = db.Column(db.Date, nullable=False)
     success_rate = db.Column(db.Integer, nullable=False)
     section = db.Column(db.String(255), nullable=False)
@@ -74,7 +77,25 @@ class Test(db.Model):
         return {
             "date": self.date.strftime('%d.%m.%Y'),
             "success_rate": self.success_rate,
-            "section": self.section
+            "section": self.section,
+            "start_time": self.start_time.strftime('%H:%M:%S'),
+            "end_time": self.end_time.strftime('%H:%M:%S')
+        }
+    def to_dict_with_time(self):
+        time_seconds = (self.end_time - self.start_time).total_seconds()
+    
+
+        minutes = int(time_seconds // 60)  
+        seconds = int(time_seconds % 60)   
+        time_str = f"{minutes} мин {seconds} сек" if minutes > 0 else f"{seconds} сек"
+
+        return {
+            "date": self.date.strftime('%d.%m.%Y'),
+            "success_rate": self.success_rate,
+            "section": self.section,
+            "time": time_str,
+            "start_time": self.start_time.strftime('%H:%M:%S'),
+            "end_time": self.end_time.strftime('%H:%M:%S')
         }
 
 class Topic(db.Model):
@@ -90,4 +111,19 @@ class Topic(db.Model):
             "name": self.name,
             "tests_passed": self.tests_passed,
             "success_rate": self.success_rate
+        }
+
+class Achievement(db.Model):
+    __tablename__ = 'achievements'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    achievement_name = db.Column(db.String(255), nullable=False)
+    achievement_description = db.Column(db.Text, nullable=False)
+    date_achieved = db.Column(db.Date, nullable=False, default=datetime.now)
+
+    def to_dict(self):
+        return {
+            "achievement_name": self.achievement_name,
+            "achievement_description": self.achievement_description,
+            "date_achieved": self.date_achieved.strftime('%d.%m.%Y')
         }

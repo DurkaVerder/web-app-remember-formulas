@@ -17,6 +17,12 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+    try:
+        from migration import migrate_database
+        migrate_database()
+        print("Database migration completed successfully.")
+    except Exception as e:
+        print(f"Error creating tables: {e}")
 
 api.add_namespace(module_ns)
 api.add_namespace(modul_np)

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, session
-from models import db, User, Test, Topic
+from models import db, User, Test, Topic, Achievement
 from flask_restx import Api, Namespace, Resource, fields
 import service
 from jwt_utils import create_token, IsAuthorized
@@ -51,7 +51,8 @@ class Profile(Resource):
             return {"message": "User not found"}, 404
 
         tests = Test.query.filter_by(user_id=user_id).all()
-        topics = Topic.query.filter_by(user_id=user_id).all()
+        topics = Topic.query.filter_by(user_id=user_id).all()  # achievements not implemented yet
+        achievements = Achievement.query.filter_by(user_id=user_id).all()
 
         profile_data = {
             "user": {
@@ -59,8 +60,9 @@ class Profile(Resource):
                 "status": user.status,
                 "avatar": user.avatar
             },
-            "tests": [test.to_dict() for test in tests],
-            "topics": [topic.to_dict() for topic in topics]
+            "tests": [test.to_dict_with_time() for test in tests],
+            "topics": [topic.to_dict() for topic in topics],
+            "achievements": [achievements.to_dict() for achievements in achievements]
         }
 
         return profile_data, 200
@@ -127,5 +129,6 @@ class Download(Resource):
         user_id = auth_result['user_id']
         user = User.query.filter_by(id=user_id).first()
         user.avatar = path
+        db.session.commit()
         return {"message": "Avatar downloaded successfully"}, 200
 
