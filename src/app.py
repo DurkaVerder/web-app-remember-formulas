@@ -7,6 +7,7 @@ from admin_routes import modul_np, formula_np
 from quiz import quiz_ns
 from user import user_ns
 from flask_cors import CORS
+from logger import log_info, log_error, log_debug 
 
 app = Flask(__name__)
 api = Api(app)
@@ -15,14 +16,21 @@ application = app
 app.config.from_object(Config)
 db.init_app(app)
 
+log_info("Starting Flask application initialization")
+
 with app.app_context():
-    db.create_all()
+    try:
+        db.create_all()
+        log_info("Database tables created successfully")
+    except Exception as e:
+        log_error(f"Error creating database tables: {str(e)}")
+    
     try:
         from migration import migrate_database
         migrate_database()
-        print("Database migration completed successfully.")
+        log_info("Database migration completed successfully")
     except Exception as e:
-        print(f"Error creating tables: {e}")
+        log_error(f"Error during database migration: {str(e)}")
 
 api.add_namespace(module_ns)
 api.add_namespace(modul_np)
@@ -31,4 +39,8 @@ api.add_namespace(quiz_ns)
 api.add_namespace(user_ns)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    try:
+        log_info("Starting Flask development server")
+        app.run(debug=True)
+    except Exception as e:
+        log_error(f"Failed to start Flask server: {str(e)}")
