@@ -129,3 +129,20 @@ class Achievement(db.Model):
             "date_achieved": self.date_achieved.strftime('%d.%m.%Y'),
             "image_path": self.image_path
         }
+    
+class Video(db.Model):
+    __tablename__ = 'videos'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    link = db.Column(db.String(255), nullable=False)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text)
+    hashtag = db.Column(db.String(255))
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'link': self.link,
+            'title': self.title,
+            'description': self.description,
+            'hashtag': self.hashtag
+        }
