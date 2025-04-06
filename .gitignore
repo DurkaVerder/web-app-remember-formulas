@@ -16,7 +16,6 @@ env/
 *.log
 *.pot
 *.pyc
-
 *.mypy_cache/
 .coverage
 .cache/

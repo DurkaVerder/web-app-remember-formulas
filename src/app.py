@@ -6,6 +6,7 @@ from module import module_ns
 from admin_routes import modul_np, formula_np
 from quiz import quiz_ns
 from user import user_ns
+from video import video_ns
 from flask_cors import CORS
 from logger import log_info, log_error, log_debug 
 
@@ -37,6 +38,7 @@ api.add_namespace(modul_np)
 api.add_namespace(formula_np)
 api.add_namespace(quiz_ns)
 api.add_namespace(user_ns)
+api.add_namespace(video_ns)
 
 if __name__ == '__main__':
     try:

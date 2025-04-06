@@ -56,6 +56,20 @@ def migrate_database():
         log_error(f"Failed to create 'achievements' table: {str(e)}")
 
     try:
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS videos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                link VARCHAR(255) NOT NULL,
+                title VARCHAR(255) NOT NULL,
+                description TEXT,
+                hashtag VARCHAR(255)
+            )
+        ''')
+        log_info("Created or verified 'videos' table")
+    except Exception as e:
+        log_error(f"Failed to create 'videos' table: {str(e)}")
+
+    try:
         conn.commit()
         log_info("Database changes committed successfully")
     except Exception as e:
