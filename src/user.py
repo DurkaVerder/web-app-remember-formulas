@@ -87,11 +87,11 @@ class ValidJWT(Resource):
         return {"message": "Token is valid"}, 200
 
 def login():
+    data = request.json
+    login_input = data.get('login')
+    password_input = data.get('password')
     try:
-        data = request.json
-        login_input = data.get('login')
-        password_input = data.get('password')
-
+        
         if not login_input or not password_input:
             log_error("Login failed: Missing login or password")
             return {"message": "Login and password are required"}, 400
