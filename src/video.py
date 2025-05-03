@@ -1,7 +1,8 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields
-from models import db, Video
-from logger import log_info, log_error, log_debug
+
+from src.models import db, Video
+from src.logger import log_info, log_error, log_debug
 
 video_ns = Namespace('video', description='Добавление видео')
 

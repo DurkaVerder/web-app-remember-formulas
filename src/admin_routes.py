@@ -1,7 +1,8 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields
-from models import db, Modul, Formula, Video
-from logger import log_info, log_error, log_debug
+
+from src.models import db, Modul, Formula, Video
+from src.logger import log_info, log_error, log_debug
 
 modul_np = Namespace('Add_moduls', description='Добавление модулей')
 formula_np = Namespace('Add_formulas', description='Добавление формул')

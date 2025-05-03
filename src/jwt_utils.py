@@ -1,8 +1,9 @@
 import jwt
-from config import Config
 from datetime import datetime, timedelta
 from flask import request
-from logger import log_info, log_error, log_debug 
+
+from src.logger import log_info, log_error, log_debug 
+from src.config import Config
 
 def create_token(user_id, nickname):
     try:

@@ -1,5 +1,6 @@
 from sqlite3 import connect
-from logger import log_info, log_error, log_debug 
+
+from src.logger import log_info, log_error, log_debug 
 
 def migrate_database():
     try:

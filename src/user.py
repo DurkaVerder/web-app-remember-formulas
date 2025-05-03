@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, request, session
-from models import db, User, Test, Topic, Achievement
+
 from flask_restx import Api, Namespace, Resource, fields
-import service
-from jwt_utils import create_token, IsAuthorized
-from logger import log_info, log_error, log_debug  # Импорт функций из logger.py
+
+from src.models import db, User, Test, Topic, Achievement
+from src.service import check_password
+from src.jwt_utils import create_token, IsAuthorized
+from src.logger import log_info, log_error, log_debug  # Импорт функций из logger.py
 
 user_ns = Namespace('user', description="User operations")
 
@@ -121,7 +123,7 @@ def register():
             log_error("Registration failed: Missing login, password, or nickname")
             return {"message": "Login, password, and nickname are required"}, 400
 
-        if not service.check_password(password):
+        if not check_password(password):
             log_error(f"Registration failed for {login}: Invalid password")
             return {"message": "Invalid login or password"}, 401
 

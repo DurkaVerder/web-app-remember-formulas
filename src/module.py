@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
-from models import db, Modul, Formula, User, UsersFormulas, UsersModuls
 from flask_restx import Api, Resource, fields, Namespace
-from logger import log_info, log_error, log_debug 
+
+from src.models import db, Modul, Formula, User, UsersFormulas, UsersModuls
+from src.logger import log_info, log_error, log_debug 
 
 module_ns = Namespace('module', description='Operations related to modules')
 

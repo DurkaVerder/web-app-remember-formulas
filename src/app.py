@@ -1,14 +1,15 @@
 from flask import Flask
 from flask_restx import Api
-from config import Config
-from models import db
-from module import module_ns
-from admin_routes import modul_np, formula_np
-from quiz import quiz_ns
-from user import user_ns
-from video import video_ns
 from flask_cors import CORS
-from logger import log_info, log_error, log_debug 
+
+from src.config import Config
+from src.models import db
+from src.module import module_ns
+from src.admin_routes import modul_np, formula_np
+from src.quiz import quiz_ns
+from src.user import user_ns
+from src.video import video_ns
+from src.logger import log_info, log_error, log_debug 
 
 app = Flask(__name__)
 api = Api(app)

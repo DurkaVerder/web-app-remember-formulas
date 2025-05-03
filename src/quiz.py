@@ -1,10 +1,11 @@
 from flask import Blueprint, jsonify, request, session
 import random
-from models import db, Formula, Test, Topic, Modul, Achievement
 from flask_restx import Resource, fields, Namespace
-from jwt_utils import IsAuthorized
 from datetime import datetime
-from logger import log_info, log_error, log_debug
+
+from src.jwt_utils import IsAuthorized
+from src.logger import log_info, log_error, log_debug
+from src.models import db, Formula, Test, Topic, Modul, Achievement
 
 quiz_ns = Namespace('quiz', description='Operations related to quizzes')
 

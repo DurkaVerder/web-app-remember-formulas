@@ -13,7 +13,7 @@ env/
 
 
 # Flask/Python Logs
-
+*.log
 *.pot
 *.pyc
 *.mypy_cache/

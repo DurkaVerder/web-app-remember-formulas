@@ -1,6 +1,7 @@
-from models import db, User, Topic, Test, UsersFormulas, Modul, Achievement
 from datetime import datetime, timedelta
-from logger import log_info, log_error, log_debug
+
+from src.models import db, User, Topic, Test, UsersFormulas, Modul, Achievement
+from src.logger import log_info, log_error, log_debug
 
 ACHIEVEMENTS = {
     "Начинающий физик": {
