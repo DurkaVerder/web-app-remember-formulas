@@ -1,0 +1,42 @@
+2025-05-03 17:07:06,491 - PhysicsLearningPlatform - INFO - Starting Flask application initialization
+2025-05-03 17:07:06,502 - PhysicsLearningPlatform - INFO - Database tables created successfully
+2025-05-03 17:07:06,508 - PhysicsLearningPlatform - INFO - Successfully connected to SQLite database 'instance/db_sqlite.db'
+2025-05-03 17:07:06,508 - PhysicsLearningPlatform - INFO - Column 'start_time' already exists in 'tests' table, skipping: duplicate column name: start_time
+2025-05-03 17:07:06,510 - PhysicsLearningPlatform - INFO - Updated 'start_time' with CURRENT_TIMESTAMP where NULL
+2025-05-03 17:07:06,510 - PhysicsLearningPlatform - INFO - Column 'end_time' already exists in 'tests' table, skipping: duplicate column name: end_time
+2025-05-03 17:07:06,511 - PhysicsLearningPlatform - INFO - Updated 'end_time' with CURRENT_TIMESTAMP where NULL
+2025-05-03 17:07:06,511 - PhysicsLearningPlatform - INFO - Column 'image_path' already exists in 'achievements' table, skipping: duplicate column name: image_path
+2025-05-03 17:07:06,511 - PhysicsLearningPlatform - INFO - Created or verified 'achievements' table
+2025-05-03 17:07:06,511 - PhysicsLearningPlatform - INFO - Created or verified 'videos' table
+2025-05-03 17:07:06,511 - PhysicsLearningPlatform - INFO - Database changes committed successfully
+2025-05-03 17:07:06,512 - PhysicsLearningPlatform - INFO - Database connection closed
+2025-05-03 17:07:06,512 - PhysicsLearningPlatform - INFO - Database migration completed successfully
+2025-05-03 17:07:06,515 - PhysicsLearningPlatform - INFO - Starting Flask development server
+2025-05-03 17:07:06,547 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-03 17:07:06,547 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-03 17:07:06,547 - werkzeug - INFO -  * Restarting with stat
+2025-05-03 17:07:07,139 - PhysicsLearningPlatform - INFO - Starting Flask application initialization
+2025-05-03 17:07:07,142 - PhysicsLearningPlatform - INFO - Database tables created successfully
+2025-05-03 17:07:07,142 - PhysicsLearningPlatform - INFO - Successfully connected to SQLite database 'instance/db_sqlite.db'
+2025-05-03 17:07:07,142 - PhysicsLearningPlatform - INFO - Column 'start_time' already exists in 'tests' table, skipping: duplicate column name: start_time
+2025-05-03 17:07:07,146 - PhysicsLearningPlatform - INFO - Updated 'start_time' with CURRENT_TIMESTAMP where NULL
+2025-05-03 17:07:07,146 - PhysicsLearningPlatform - INFO - Column 'end_time' already exists in 'tests' table, skipping: duplicate column name: end_time
+2025-05-03 17:07:07,147 - PhysicsLearningPlatform - INFO - Updated 'end_time' with CURRENT_TIMESTAMP where NULL
+2025-05-03 17:07:07,148 - PhysicsLearningPlatform - INFO - Column 'image_path' already exists in 'achievements' table, skipping: duplicate column name: image_path
+2025-05-03 17:07:07,148 - PhysicsLearningPlatform - INFO - Created or verified 'achievements' table
+2025-05-03 17:07:07,148 - PhysicsLearningPlatform - INFO - Created or verified 'videos' table
+2025-05-03 17:07:07,148 - PhysicsLearningPlatform - INFO - Database changes committed successfully
+2025-05-03 17:07:07,149 - PhysicsLearningPlatform - INFO - Database connection closed
+2025-05-03 17:07:07,150 - PhysicsLearningPlatform - INFO - Database migration completed successfully
+2025-05-03 17:07:07,160 - PhysicsLearningPlatform - INFO - Starting Flask development server
+2025-05-03 17:07:07,183 - werkzeug - WARNING -  * Debugger is active!
+2025-05-03 17:07:07,194 - werkzeug - INFO -  * Debugger PIN: 749-235-091
+2025-05-03 17:07:20,844 - werkzeug - INFO - 127.0.0.1 - - [03/May/2025 17:07:20] "GET / HTTP/1.1" 200 -
+2025-05-03 17:07:20,992 - werkzeug - INFO - 127.0.0.1 - - [03/May/2025 17:07:20] "[36mGET /swaggerui/droid-sans.css HTTP/1.1[0m" 304 -
+2025-05-03 17:07:21,005 - werkzeug - INFO - 127.0.0.1 - - [03/May/2025 17:07:21] "[36mGET /swaggerui/swagger-ui-standalone-preset.js HTTP/1.1[0m" 304 -
+2025-05-03 17:07:21,010 - werkzeug - INFO - 127.0.0.1 - - [03/May/2025 17:07:21] "[36mGET /swaggerui/swagger-ui.css HTTP/1.1[0m" 304 -
+2025-05-03 17:07:21,012 - werkzeug - INFO - 127.0.0.1 - - [03/May/2025 17:07:21] "[36mGET /swaggerui/swagger-ui-bundle.js HTTP/1.1[0m" 304 -
+2025-05-03 17:07:21,494 - werkzeug - INFO - 127.0.0.1 - - [03/May/2025 17:07:21] "GET /swagger.json HTTP/1.1" 200 -
+2025-05-03 17:07:26,613 - PhysicsLearningPlatform - INFO - Retrieved 5 modules successfully
+2025-05-03 17:07:26,623 - werkzeug - INFO - 127.0.0.1 - - [03/May/2025 17:07:26] "GET /module/api/modules HTTP/1.1" 200 -
