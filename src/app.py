@@ -28,7 +28,7 @@ with app.app_context():
         log_error(f"Error creating database tables: {str(e)}")
     
     try:
-        from migration import migrate_database
+        from src.migration import migrate_database
         migrate_database()
         log_info("Database migration completed successfully")
     except Exception as e:

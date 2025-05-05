@@ -6,6 +6,7 @@ from datetime import datetime
 from src.jwt_utils import IsAuthorized
 from src.logger import log_info, log_error, log_debug
 from src.models import db, Formula, Test, Topic, Modul, Achievement
+from src.achievements import check_achievements
 
 quiz_ns = Namespace('quiz', description='Operations related to quizzes')
 
@@ -184,7 +185,7 @@ def submit_answers(user_id):
             db.session.add(topic)
         
         db.session.commit()
-        from achievements import check_achievements
+        
         check_achievements(user_id)
         log_info(f"Quiz submitted for user {user_id}: {correct_answers}/{total_questions} correct, accuracy {accuracy}%")
         
@@ -319,7 +320,6 @@ def submit_symbol_answers(user_id):
             db.session.add(topic)
         
         db.session.commit()
-        from achievements import check_achievements
         check_achievements(user_id)
         log_info(f"Symbol quiz submitted for user {user_id}: {correct_answers}/{total_questions} correct, accuracy {accuracy}%")
         
