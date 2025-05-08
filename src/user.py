@@ -140,7 +140,7 @@ def register():
         log_error(f"Error registering user {login}: {str(e)}")
         return {"message": "Database error"}, 500
 
-@user_ns.route('/downloadavatar')
+@user_ns.route('/upload-avatar')
 class Download(Resource):
     @user_ns.expect(download_avatar_model)
     @user_ns.doc(description="Download a file.")
