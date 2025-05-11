@@ -41,6 +41,7 @@ class Formula(db.Model):
     description = db.Column(db.Text, nullable=False)
     formula = db.Column(db.Text, nullable=False)
     idmodul = db.Column(db.Integer, db.ForeignKey('moduls.id'), nullable=False)
+    symbols_description = db.Column(db.Text, nullable=True)
 
     modul = db.relationship('Modul', backref='formulas')
 

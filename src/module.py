@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify, request
 from flask_restx import Api, Resource, fields, Namespace
+import json
 
 from src.models import db, Modul, Formula, User, UsersFormulas, UsersModuls
 from src.logger import log_info, log_error, log_debug 
 
 module_ns = Namespace('module', description='Operations related to modules')
+
 
 # Определение модели для Swagger
 user_formula_model = module_ns.model('UserFormula', {
@@ -13,6 +15,14 @@ user_formula_model = module_ns.model('UserFormula', {
 
 user_module_model = module_ns.model('UserModule', {
     'message': fields.String(description='Message indicating assignment success')
+})
+
+
+formula_symbols_description_model = module_ns.model('FormulaSymbolsDescription', {
+    'id': fields.Integer(description='ID of the formula'),
+    'name': fields.String(description='Name of the formula'),
+    'formula': fields.String(description='Formula content'),
+    'symbols_description': fields.Raw(description='Description of each symbol in the formula')
 })
 
 # Получение всех модулей
@@ -119,3 +129,34 @@ def list_formulas(module_id):
     except Exception as e:
         log_error(f"Error in list_formulas for module_id {module_id}: {str(e)}")
         raise
+
+
+
+@module_ns.route('/api/formula/<int:formula_id>/symbols_description')
+class FormulaSymbolsDescription(Resource):
+    @module_ns.doc('get_formula_symbols_description')
+    @module_ns.marshal_with(formula_symbols_description_model)
+    def get(self, formula_id):
+        try:
+            formula = Formula.query.get_or_404(formula_id)
+            if not formula.symbols_description:
+                log_info(f"No symbols description available for formula_id {formula_id}")
+                return {"message": f"No symbols description available for formula {formula_id}"}, 404
+            
+            # Парсим symbols_description как JSON
+            try:
+                symbols_description = json.loads(formula.symbols_description)
+            except json.JSONDecodeError as e:
+                log_error(f"Invalid JSON in symbols_description for formula_id {formula_id}: {str(e)}")
+                return {"message": "Invalid symbols description format"}, 400
+
+            log_info(f"Retrieved symbols description for formula_id {formula_id}")
+            return {
+                'id': formula.id,
+                'name': formula.name,
+                'formula': formula.formula,
+                'symbols_description': symbols_description  # Возвращаем распарсенный JSON
+            }
+        except Exception as e:
+            log_error(f"Error retrieving symbols description for formula_id {formula_id}: {str(e)}")
+            return {"message": f"Formula {formula_id} not found or error occurred"}, 404

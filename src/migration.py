@@ -42,6 +42,12 @@ def migrate_database():
         log_info(f"Column 'image_path' already exists in 'achievements' table, skipping: {str(e)}")
 
     try:
+        cursor.execute('ALTER TABLE formulas ADD COLUMN symbols_description TEXT')
+        log_info("Added column 'symbols_description' to 'formulas' table")
+    except Exception as e:
+        log_info(f"Column 'symbols_description' already exists in 'formulas' table, skipping: {str(e)}")
+
+    try:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS achievements (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
