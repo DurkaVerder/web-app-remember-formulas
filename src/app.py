@@ -62,6 +62,6 @@ api.add_namespace(video_ns)
 if __name__ == '__main__':
     try:
         log_info("Starting Flask development server")
-        app.run(debug=True)
+        app.run(debug=False)
     except Exception as e:
         log_error(f"Failed to start Flask server: {str(e)}")
