@@ -16,6 +16,10 @@ api = Api(app)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 application = app
 app.config.from_object(Config)
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE="None",
+)
 db.init_app(app)
 
 log_info("Starting Flask application initialization")
