@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Symbol Quiz Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    #error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Symbol Quiz Test</h1>
+  <button id="startQuiz">Start Symbol Quiz</button>
+  <button id="submitAnswers">Submit Answers</button>
+  <p id="error"></p>
+
+  <script>
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJuaWNrbmFtZSI6IkR1cmthVmVyZGVyIiwiZXhwIjoxNzQ3NDEzOTg3fQ.J73jT_KeSbSGgqYp25mYAshih-eD8js3eNqbhM0sKpk";
+    let quizData = null;
+
+    function showError(message) {
+      document.getElementById('error').textContent = message;
+    }
+
+    function clearError() {
+      document.getElementById('error').textContent = '';
+    }
+
+    document.getElementById('startQuiz').addEventListener('click', async () => {
+      clearError();
+      try {
+        const response = await fetch("http://127.0.0.1:5000/quiz/start_symbol_quiz/1", {
+          method: "GET",
+          headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          credentials: "include"
+        });
+
+        console.log('GET Response Headers:', [...response.headers.entries()]);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}, Message: ${await response.text()}`);
+        }
+
+        quizData = await response.json();
+        console.log('Quiz started:', quizData);
+        alert("Quiz started. Check console for details.");
+      } catch (error) {
+        console.error('Error starting quiz:', error);
+        showError(`Failed to start quiz: ${error.message}`);
+      }
+    });
+
+    document.getElementById('submitAnswers').addEventListener('click', async () => {
+      clearError();
+      if (!quizData) {
+        showError("Start the quiz first!");
+        return;
+      }
+
+      const answers = [
+        ["v", "=", "v0", "+", "a", "*", "t"],           // v=v0+a*t
+        ["a", "=", "Δv", "/", "Δt"],                   // a=Δv/Δt
+        ["s", "=", "v", "*", "t"],                     // s=vt
+        ["s", "=", "v0", "*", "t", "+", "1", "/", "2", "*", "a", "*", "t", "^", "2"], // s=v0*t+1/2*a*t^2
+        ["v", "=", "s", "/", "t"],                     // v=s/t
+        ["h", "=", "1", "/", "2", "*", "g", "*", "t", "^", "2"] // h=1/2*g*t^2
+      ];
+
+      try {
+        console.log('Submitting answers:', JSON.stringify(answers, null, 2));
+        const response = await fetch("http://127.0.0.1:5000/quiz/submit_symbol_answers", {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ answers }),
+          credentials: "include"
+        });
+
+        console.log('POST Response Headers:', [...response.headers.entries()]);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
+        }
+
+        const json = await response.json();
+        console.log('Quiz submitted:', json);
+        alert("Quiz submitted. Response:\n" + JSON.stringify(json, null, 2));
+      } catch (error) {
+        console.error('Error submitting quiz:', error);
+        showError(`Failed to submit answers: ${error.message}`);
+      }
+    });
+  </script>
+</body>
+</html>
