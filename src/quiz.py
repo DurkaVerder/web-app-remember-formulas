@@ -256,7 +256,8 @@ def submit_symbol_answers(user_id):
         
         quiz = session.get('symbol_quiz', {})
         if not quiz:
-            log_error(f"User {user_id} attempted to submit symbol quiz answers but quiz not started")
+            log_error(f"User {user_id} attempted to submit symbol quiz answers but quiz not started. "
+                      f"Session data: {session.items()}")
             return {"message": "Symbol quiz not started."}, 400
         
         start_time = datetime.fromisoformat(quiz['start_time'])
