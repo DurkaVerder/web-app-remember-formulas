@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restx import Api
 from flask_cors import CORS
 
@@ -13,7 +13,20 @@ from src.logger import log_info, log_error, log_debug
 
 app = Flask(__name__)
 api = Api(app)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app, supports_credentials=True)
+
+# глобальный after_request, который «эхо» отдаёт Origin
+@app.after_request
+def echo_cors(response):
+    origin = request.headers.get('Origin')
+    if origin:
+        # Разрешаем именно тот origin, от которого пришёл запрос
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Methods'] = 'GET,POST,OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Authorization,Content-Type'
+    return response
+#CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 application = app
 app.config.from_object(Config)
 app.config.update(
