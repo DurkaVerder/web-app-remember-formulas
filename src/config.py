@@ -6,5 +6,5 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{DB_PATH}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = 'secret_key'
+    SECRET_KEY = 'asdhsavdhsabhsa121432dsjk'
     CHIPHER_KEY = 3
