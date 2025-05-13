@@ -18,7 +18,7 @@ application = app
 app.config.from_object(Config)
 app.config.update(
     SESSION_COOKIE_SECURE=False,
-    SESSION_COOKIE_SAMESITE="None",
+    SESSION_COOKIE_SAMESITE="Lax",
 )
 
 db.init_app(app)
