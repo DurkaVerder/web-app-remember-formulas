@@ -41,7 +41,7 @@
     document.getElementById('startQuiz').addEventListener('click', async () => {
       clearError();
       try {
-        const response = await fetch("http://127.0.0.1:5000/quiz/start_symbol_quiz/1", {
+        const response = await fetch("http://formulas.std-2585.ist.mospolytech.ru/quiz/start_symbol_quiz/1", {
           method: "GET",
           headers: {
             "Accept": "application/json",
@@ -82,7 +82,7 @@
 
       try {
         console.log('Submitting answers:', JSON.stringify(answers, null, 2));
-        const response = await fetch("http://127.0.0.1:5000/quiz/submit_symbol_answers", {
+        const response = await fetch("http://formulas.std-2585.ist.mospolytech.ru/quiz/submit_symbol_answers", {
           method: "POST",
           headers: {
             "Accept": "application/json",
