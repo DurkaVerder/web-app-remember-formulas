@@ -30,8 +30,8 @@ def echo_cors(response):
 application = app
 app.config.from_object(Config)
 app.config.update(
-    SESSION_COOKIE_SECURE=False,
-    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE="None",
 )
 
 db.init_app(app)
