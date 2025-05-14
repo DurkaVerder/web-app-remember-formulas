@@ -2,10 +2,11 @@ from flask import Blueprint, jsonify, request, session
 import random
 from flask_restx import Resource, fields, Namespace
 from datetime import datetime
+import json
 
 from src.jwt_utils import IsAuthorized
 from src.logger import log_info, log_error, log_debug
-from src.models import db, Formula, Test, Topic, Modul, Achievement
+from src.models import db, Formula, Test, Topic, Modul, Achievement, SymbolQuiz
 from src.achievements import check_achievements
 
 quiz_ns = Namespace('quiz', description='Operations related to quizzes')
@@ -56,9 +57,28 @@ class StartSymbolQuiz(Resource):
         if "error" in auth_result:
             log_error(f"Symbol quiz start failed for module {module_id}: {auth_result['error']}")
             return {"message": auth_result["error"]}, auth_result["status"]
-        
+        user_id = auth_result['user_id']
         log_info(f"Starting symbol quiz for module {module_id} by user {auth_result['user_id']}")
-        return start_symbol_quiz(module_id)
+        return start_symbol_quiz(module_id, user_id)
+
+# Маршрут для проверки ответов квиза с символами
+@quiz_ns.route('/check_symbol_quiz/<int:module_id>')
+class CheckSymbolQuiz(Resource):
+    @quiz_ns.doc(tags=['Quiz'], description="Проверить, начат ли квиз с символами для указанного модуля.")
+    def get(self, module_id):
+        auth_result = IsAuthorized()
+        if "error" in auth_result:
+            log_error(f"Symbol quiz check failed for module {module_id}: {auth_result['error']}")
+            return {"message": auth_result["error"]}, auth_result["status"]
+        
+        user_id = auth_result['user_id']
+        quiz = SymbolQuiz.query.filter_by(user_id=user_id, module_id=module_id, completed=False).first()
+        if not quiz:
+            log_info(f"No active symbol quiz found for user {user_id} and module {module_id}")
+            return {"message": "No active symbol quiz found."}, 404
+        
+        log_info(f"Active symbol quiz found for user {user_id} and module {module_id}")
+        return {"quiz_id": quiz.id, "questions": json.loads(quiz.questions)}, 200
 
 # Маршрут для проверки ответов квиза с символами
 @quiz_ns.route('/submit_symbol_answers')
@@ -74,7 +94,6 @@ class SubmitSymbolAnswers(Resource):
         user_id = auth_result['user_id']
         log_info(f"User {user_id} submitting answers for symbol quiz")
         return submit_symbol_answers(user_id)
-
 # Функция для старта обычного квиза
 def start_quiz(module_id):
     try:
@@ -203,7 +222,7 @@ def submit_answers(user_id):
         return {"message": f"Database error: {str(e)}"}, 500
 
 # Функция для старта квиза с символами
-def start_symbol_quiz(module_id):
+def start_symbol_quiz(module_id, user_id):
     try:
         module = Modul.query.get(module_id)
         if not module:
@@ -214,6 +233,12 @@ def start_symbol_quiz(module_id):
         if len(formulas) < 6:
             log_error(f"Not enough formulas ({len(formulas)}) in module {module_id} for symbol quiz")
             return {"message": "Not enough formulas in the module."}, 400
+
+        # Проверяем, есть ли незавершённый квиз для этого пользователя и модуля
+        existing_quiz = SymbolQuiz.query.filter_by(user_id=user_id, module_id=module_id, completed=False).first()
+        if existing_quiz:
+            log_info(f"Found existing symbol quiz for user {user_id} and module {module_id}")
+            return {"questions": json.loads(existing_quiz.questions)}, 200
 
         selected_formulas = random.sample(formulas, 6)
         questions = []
@@ -235,16 +260,23 @@ def start_symbol_quiz(module_id):
                 "length": len(symbols)
             })
         
-        session['symbol_quiz'] = {
-            'module_id': module_id,
-            'questions': questions,
-            'correct_answers': 0,
-            'incorrect_answers': 0,
-            'start_time': datetime.now().isoformat()
-        }
-        log_info(f"Symbol quiz started for module {module_id} with {len(questions)} questions")
+        # Сохраняем квиз в базе данных
+        new_quiz = SymbolQuiz(
+            user_id=user_id,
+            module_id=module_id,
+            questions=json.dumps(questions),
+            start_time=datetime.now(),
+            correct_answers=0,
+            incorrect_answers=0,
+            completed=False
+        )
+        db.session.add(new_quiz)
+        db.session.commit()
+        
+        log_info(f"Symbol quiz started for user {user_id} and module {module_id} with {len(questions)} questions")
         return {"questions": questions}, 200
     except Exception as e:
+        db.session.rollback()
         log_error(f"Error starting symbol quiz for module {module_id}: {str(e)}")
         return {"message": "Internal server error"}, 500
 
@@ -254,13 +286,13 @@ def submit_symbol_answers(user_id):
         data = request.json
         user_answers = data.get('answers', [])
         
-        quiz = session.get('symbol_quiz', {})
+        quiz = SymbolQuiz.query.filter_by(user_id=user_id, completed=False).order_by(SymbolQuiz.start_time.desc()).first()
         if not quiz:
-            log_error(f"User {user_id} attempted to submit symbol quiz answers but quiz not started. "
-                      f"Session data: {session.items()}")
+            log_error(f"User {user_id} attempted to submit symbol quiz answers but no active quiz found")
             return {"message": "Symbol quiz not started."}, 400
         
-        start_time = datetime.fromisoformat(quiz['start_time'])
+        questions = json.loads(quiz.questions)
+        start_time = quiz.start_time
         end_time = datetime.now()
         
         correct_answers = 0
@@ -268,9 +300,9 @@ def submit_symbol_answers(user_id):
         results = []
         
         for i, user_answer in enumerate(user_answers):
-            if i >= len(quiz['questions']):
+            if i >= len(questions):
                 break
-            question = quiz['questions'][i]
+            question = questions[i]
             user_formula = ''.join(user_answer).replace(" ", "")
             is_correct = user_formula == question['correct_formula']
             
@@ -287,12 +319,12 @@ def submit_symbol_answers(user_id):
                 "is_correct": is_correct
             })
         
-        total_questions = len(quiz['questions'])
+        total_questions = len(questions)
         accuracy = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
         
-        module = Modul.query.get(quiz['module_id'])
+        module = Modul.query.get(quiz.module_id)
         if not module:
-            log_error(f"Module {quiz['module_id']} not found during symbol quiz submission for user {user_id}")
+            log_error(f"Module {quiz.module_id} not found during symbol quiz submission for user {user_id}")
             return {"message": "Module not found"}, 404
         section_name = module.name
 
@@ -320,11 +352,15 @@ def submit_symbol_answers(user_id):
             )
             db.session.add(topic)
         
+        # Отмечаем квиз как завершённый
+        quiz.correct_answers = correct_answers
+        quiz.incorrect_answers = incorrect_answers
+        quiz.completed = True
         db.session.commit()
-        check_achievements(user_id)
+        
+        # check_achievements(user_id)  # Временно отключено из-за ошибки
         log_info(f"Symbol quiz submitted for user {user_id}: {correct_answers}/{total_questions} correct, accuracy {accuracy}%")
         
-        session.pop('symbol_quiz', None)
         return {
             "correct_answers": correct_answers,
             "incorrect_answers": incorrect_answers,

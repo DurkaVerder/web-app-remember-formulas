@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import json
 
 db = SQLAlchemy()
 
@@ -146,4 +147,30 @@ class Video(db.Model):
             'title': self.title,
             'description': self.description,
             'hashtag': self.hashtag
+        }
+    
+class SymbolQuiz(db.Model):
+    __tablename__ = 'symbol_quizzes'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    module_id = db.Column(db.Integer, db.ForeignKey('moduls.id'), nullable=False)
+    questions = db.Column(db.Text, nullable=False)  # JSON-строка с вопросами
+    start_time = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    correct_answers = db.Column(db.Integer, nullable=False, default=0)
+    incorrect_answers = db.Column(db.Integer, nullable=False, default=0)
+    completed = db.Column(db.Boolean, nullable=False, default=False)  # Флаг завершения
+
+    user = db.relationship('User', backref='symbol_quizzes')
+    module = db.relationship('Modul', backref='symbol_quizzes')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'module_id': self.module_id,
+            'questions': json.loads(self.questions),
+            'start_time': self.start_time.isoformat(),
+            'correct_answers': self.correct_answers,
+            'incorrect_answers': self.incorrect_answers,
+            'completed': self.completed
         }

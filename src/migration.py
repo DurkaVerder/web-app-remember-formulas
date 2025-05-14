@@ -76,6 +76,26 @@ def migrate_database():
     except Exception as e:
         log_error(f"Failed to create 'videos' table: {str(e)}")
 
+
+    try:
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS symbol_quizzes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                module_id INTEGER NOT NULL,
+                questions TEXT NOT NULL,
+                start_time DATETIME NOT NULL,
+                correct_answers INTEGER NOT NULL DEFAULT 0,
+                incorrect_answers INTEGER NOT NULL DEFAULT 0,
+                completed BOOLEAN NOT NULL DEFAULT FALSE,
+                FOREIGN KEY (user_id) REFERENCES users(id),
+                FOREIGN KEY (module_id) REFERENCES moduls(id)
+            )
+        ''')
+        log_info("Created or verified 'symbol_quizzes' table")
+    except Exception as e:
+        log_error(f"Failed to create 'symbol_quizzes' table: {str(e)}")
+
     try:
         conn.commit()
         log_info("Database changes committed successfully")
