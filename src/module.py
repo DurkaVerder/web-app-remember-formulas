@@ -21,6 +21,7 @@ user_module_model = module_ns.model('UserModule', {
 formula_symbols_description_model = module_ns.model('FormulaSymbolsDescription', {
     'id': fields.Integer(description='ID of the formula'),
     'name': fields.String(description='Name of the formula'),
+    'description': fields.String(description='Description of the formula'),
     'formula': fields.String(description='Formula content'),
     'symbols_description': fields.Raw(description='Description of each symbol in the formula')
 })
@@ -154,6 +155,7 @@ class FormulaSymbolsDescription(Resource):
             return {
                 'id': formula.id,
                 'name': formula.name,
+                'description': formula.description,
                 'formula': formula.formula,
                 'symbols_description': symbols_description  # Возвращаем распарсенный JSON
             }
